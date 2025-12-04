@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        background:
+            radial-gradient(circle at 0% 0%, #ff9af5 0, transparent 55%),
+            radial-gradient(circle at 100% 0%, #8a7dff 0, transparent 55%),
+            radial-gradient(circle at 0% 100%, #ff6f91 0, transparent 55%),
+            radial-gradient(circle at 100% 100%, #5c6fff 0, transparent 55%),
+            linear-gradient(135deg, #f651ff, #5f7bff);
+        display: flex;
+        align-items: center;
+        justify-content: center; /* center whole section */
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* wrapper to mimic two-column card */
+    body > .page-wrapper {
+        width: 85%;
+        max-width: 1000px;
+        height: 70vh;
+        background: transparent;
+        display: flex;
+        align-items: stretch;
+        justify-content: center;
+        position: relative;
+    }
+
+    /* left illustration panel */
+    .left-panel {
+        flex: 1.4;
+        border-radius: 24px 0 0 24px;
+        background:
+            url("https://img.freepik.com/free-vector/budget-planning-concept-illustration_114360-8097.jpg")
+                center/70% no-repeat,
+            linear-gradient(135deg, #5f7bff, #f651ff);
+        box-shadow: 0 20px 40px rgba(24, 12, 88, 0.45);
+    }
+
+    /* right login panel */
+    .container {
+        flex: 1;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(244, 244, 255, 0.98));
+        padding: 40px 35px 30px;
+        border-radius: 0 24px 24px 0;
+        text-align: center;
+        box-shadow: 0 20px 40px rgba(24, 12, 88, 0.45);
+        position: relative;
+        overflow: hidden;
+        margin-left: 0;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .container::before,
+    .container::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(18px);
+        opacity: 0.7;
+        z-index: -1;
+    }
+
+    .container::before {
+        width: 160px;
+        height: 160px;
+        background: radial-gradient(circle, #5f7bff, #8b5bff);
+        top: -50px;
+        left: -40px;
+    }
+
+    .container::after {
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(circle, #ff78b5, #f651ff);
+        bottom: -70px;
+        right: -60px;
+    }
+
+    h2 {
+        margin-top: 0;
+        margin-bottom: 18px;
+        color: #1b2559;
+        letter-spacing: 1px;
+    }
+
+    .input-box {
+        position: relative;
+        width: 90%;
+        margin: 0 auto 12px;
+    }
+
+    input {
+        width: 100%;
+        padding: 11px 12px;
+        margin: 6px 0;
+        border-radius: 25px;
+        border: 1px solid rgba(120, 120, 175, 0.4);
+        font-size: 14px;
+        background: rgba(255, 255, 255, 0.9);
+        color: #1b2559;
+        outline: none;
+        transition: box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+
+    input:focus {
+        border-color: #6a6bff;
+        box-shadow: 0 0 0 2px rgba(106, 107, 255, 0.25);
+        background: #ffffff;
+    }
+
+    input::placeholder {
+        color: #a0a4c0;
+    }
+
+    .eye {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: 18px;
+        color: #7a80c0;
+    }
+
+    button {
+        width: 90%;
+        padding: 11px;
+        background: linear-gradient(90deg, #246bff, #8a4dff);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 15px;
+        margin: 6px 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 8px 18px rgba(35, 67, 161, 0.45);
+        transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+    }
+
+    button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 24px rgba(35, 67, 161, 0.55);
+        opacity: 0.95;
+    }
+
+    .register-btn {
+        background: linear-gradient(90deg, #ff6f61, #ff3f8e) !important;
+        color: #ffffff;
+        border: none;
+        box-shadow: 0 8px 18px rgba(200, 60, 120, 0.45);
+        text-transform: uppercase;
+    }
+
+    .register-btn:hover {
+        background: linear-gradient(90deg, #ff8b73, #ff529c) !important;
+        box-shadow: 0 12px 24px rgba(200, 60, 120, 0.55);
+        transform: translateY(-1px);
+    }
+
+    /* Register popup */
+    .popup {
+        display: none;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(5, 8, 31, 0.55);
+        z-index: 1000;
+        backdrop-filter: blur(4px);
+    }
+
+    .popup-content {
+        background: linear-gradient(135deg, #ffffff, #f2f2ff);
+        width: 360px;
+        margin: 120px auto;
+        padding: 25px;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 20px 40px rgba(24, 12, 88, 0.5);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .popup-content::before {
+        content: "";
+        position: absolute;
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        background: radial-gradient(circle, #5f7bff, #a45dff);
+        top: -60px;
+        right: -40px;
+        opacity: 0.6;
+        z-index: -1;
+        filter: blur(6px);
+    }
+
+    .close-btn {
+        background: #dc3545 !important;
+        box-shadow: none;
+        text-transform: none;
+    }
+
+    .user-list {
+        text-align: left;
+        max-height: 200px;
+        overflow-y: auto;
+        margin: 10px 0 14px;
+        background: rgba(243, 244, 255, 0.98);
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid rgba(180, 182, 220, 0.6);
+    }
+
+    .user-item {
+        padding: 8px 10px;
+        margin: 5px 0;
+        background: #ffffff;
+        border-radius: 6px;
+        cursor: pointer;
+        border-left: 4px solid #5f7bff;
+        font-size: 13px;
+        color: #1f2759;
+        transition: background 0.15s ease, transform 0.15s ease;
+    }
+
+    .user-item:hover {
+        background: #edf0ff;
+        transform: translateX(2px);
+    }
+
+    .no-users {
+        color: #777ba5;
+        font-style: italic;
+        font-size: 13px;
+    }
+
+    /* mobile: stack panels */
+    @media (max-width: 800px) {
+        body > .page-wrapper {
+            flex-direction: column;
+            height: auto;
+        }
+        .left-panel {
+            display: none;
+        }
+        .container {
+            border-radius: 24px;
+            width: 90%;
+            margin: 40px auto;
+        }
+    }
+</style>
+</head>
+
+<body>
+<div class="page-wrapper">
+    <div class="left-panel"></div>
+
+    <div class="container">
+        <h2>Login</h2>
+        <div class="input-box">
+            <input type="text" id="username" placeholder="Enter Username" list="userList">
+            <datalist id="userList"></datalist>
+        </div>
+        <div class="input-box">
+            <input type="password" id="password" placeholder="Enter Password">
+            <span class="eye" onclick="togglePassword()">👁</span>
+        </div>
+        <button onclick="login()">Login</button>
+        <br>
+        <button class="register-btn" onclick="openRegister()">Register New User</button>
+    </div>
+</div>
+
+<!-- REGISTER POPUP -->
+<div class="popup" id="registerPopup">
+    <div class="popup-content">
+        <h2>Register New User</h2>
+        <p>Existing Users:</p>
+        <div id="existingUsers" class="user-list"></div>
+        
+        <input type="text" id="regUser" placeholder="New Username">
+        <input type="password" id="regPass" placeholder="New Password">
+        <input type="password" id="regPassConfirm" placeholder="Confirm Password">
+        
+        <button onclick="registerUser()">Create User</button>
+        <button class="close-btn" onclick="closeRegister()">Close</button>
+    </div>
+</div>
+
+<script>
+    // Load existing users on page load
+    window.onload = function() {
+        loadUserList();
+        populateDatalist();
+    };
+
+    function togglePassword() {
+        let pass = document.getElementById("password");
+        pass.type = pass.type === "password" ? "text" : "password";
+    }
+
+    function openRegister() {
+        document.getElementById("registerPopup").style.display = "block";
+        loadUserList();
+    }
+
+    function closeRegister() {
+        document.getElementById("registerPopup").style.display = "none";
+        document.getElementById("regUser").value = "";
+        document.getElementById("regPass").value = "";
+        document.getElementById("regPassConfirm").value = "";
+    }
+
+    function loadUserList() {
+        const users = getAllUsers();
+        const container = document.getElementById("existingUsers");
+        
+        if (users.length === 0) {
+            container.innerHTML = '<div class="no-users">No users registered yet</div>';
+            return;
+        }
+        
+        container.innerHTML = users.map(user => 
+            `<div class="user-item" onclick="selectUser('${user}')">${user}</div>`
+        ).join('');
+    }
+
+    function getAllUsers() {
+        const users = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.startsWith('user_')) {
+                const user = key.replace('user_', '');
+                users.push(user);
+            }
+        }
+        return users.sort();
+    }
+
+    function populateDatalist() {
+        const datalist = document.getElementById("userList");
+        const users = getAllUsers();
+        datalist.innerHTML = users.map(user => `<option value="${user}">`).join('');
+    }
+
+    function selectUser(username) {
+        document.getElementById("regUser").value = username;
+        document.getElementById("regUser").focus();
+    }
+
+    function registerUser() {
+        let newUser = document.getElementById("regUser").value.trim();
+        let newPass = document.getElementById("regPass").value;
+        let confirmPass = document.getElementById("regPassConfirm").value;
+
+        // Validation
+        if (!newUser || !newPass || !confirmPass) {
+            alert("Please fill all fields!");
+            return;
+        }
+
+        if (newPass !== confirmPass) {
+            alert("Passwords do not match!");
+            return;
+        }
+
+        if (newPass.length < 4) {
+            alert("Password must be at least 4 characters!");
+            return;
+        }
+
+        // Check if user already exists
+        if (localStorage.getItem(`user_${newUser}`)) {
+            alert("User already exists! Choose another username.");
+            return;
+        }
+
+        // Save new user
+        localStorage.setItem(`user_${newUser}`, newPass);
+        alert("User registered successfully!");
+        
+        // Clear and reload
+        closeRegister();
+        loadUserList();
+        populateDatalist();
+    }
+
+    function login() {
+        let user = document.getElementById("username").value.trim();
+        let pass = document.getElementById("password").value;
+
+        if (!user || !pass) {
+            alert("Please enter username and password!");
+            return;
+        }
+
+        // Check credentials
+        const savedPass = localStorage.getItem(`user_${user}`);
+        
+        if (savedPass && pass === savedPass) {
+            localStorage.setItem("loggedName", user.toUpperCase());
+            window.location.href = "index1.html"; // Your expense tracker
+        } else {
+            alert("Invalid username or password!");
+            document.getElementById("password").value = "";
+        }
+    }
+
+    // Allow Enter key for login
+    document.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            if (document.getElementById("registerPopup").style.display === "block") {
+                registerUser();
+            } else {
+                login();
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
